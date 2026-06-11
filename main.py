@@ -77,7 +77,7 @@ faq_app = create_agent(
 class Estado(TypedDict):
     input:              str                                  # sobrescrito a cada etapa
     session_id:         str                                  # ID da sessão
-    agentes_chamados:   Annotated[list[str], operator.add]  # acumula entre nós
+    agentes_chamados:   Annotated[list[str], operator.add]  # acumula entre nós (Annotated é como um append)
     saida_especialista: str                                  # JSON do especialista ativo
     resposta_final:     str                                  # resposta para o usuário
 
@@ -85,7 +85,7 @@ class Estado(TypedDict):
 # ==============================================================================
 # NÓS
 # ==============================================================================
-def no_roteador(estado: Estado) -> dict:
+def no_roteador(estado: Estado) -> dict: # Não retorna um Estado para não precisar retornar todas as chaves
     saida = router_app.invoke(
         {"messages": [{"role": "human", "content": estado["input"]}]},
         config={"configurable": {"thread_id": estado["session_id"]}},

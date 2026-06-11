@@ -9,7 +9,7 @@ from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
 load_dotenv()
 
-PDF_PATH = "./pdf/FAQ_assessor_v1.1.pdf"
+PDF_PATH = "./pdf/FAQ_V1.pdf"
 FAISS_INDEX_PATH = "./faiss_index"
 
 embeddings = GoogleGenerativeAIEmbeddings(

@@ -35,7 +35,7 @@ def load_or_create_faiss_index():
     db.save_local(FAISS_INDEX_PATH)
     return db
 
-db= load_or_create_faiss_index()
+db = load_or_create_faiss_index()
 
 @tool()
 def faq_retriever(question: str) -> str:

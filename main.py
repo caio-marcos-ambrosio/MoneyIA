@@ -126,11 +126,16 @@ def no_guadrail_entrada(estado: Estado) -> dict:
     
     # 4. Verifica se foi bloqueado ou não:
     if resultado["bloqueado"] == True:
+        print(f"Bloqueado: {resultado}")
+        
         return {
             "messages": [{ "role": "assistant", "content": resultado["mensagem"]}],
-            "rota":     "fim"
+            "rota":     "fim",
+            "mapa_pii":     mapa,
         }
     else:
+        print(f"Bloqueado: {resultado}")
+        
         return {
             "rota":     "roteador",                             # Opcional
             "mapa":     mapa,
@@ -147,7 +152,8 @@ def no_guardrail_saida(estado: Estado) -> dict:
     resultado = guardrail_saida(estado["messages"][-1], estado["mapa_pii"])
     
     return {
-        "messages": [{ "role": "assistant", "content": resultado["conteudo"]}]
+        "messages": [{ "role": "assistant", "content": resultado["conteudo"]}],
+        "mapa_pii": estado["mapa_pii"],
     }
     
 # ==============================================================================
@@ -170,7 +176,7 @@ grafo.add_node("financeiro",        financeiro_app)   # subgrafo direto — chec
 grafo.add_node("agenda",            agenda_app)        # subgrafo direto
 grafo.add_node("faq",               faq_app)           # subgrafo direto
 grafo.add_node("orquestrador",      no_orquestrador)
-grafo.add_node("guardrail_saida", no_guardrail_saida)
+grafo.add_node("guardrail_saida",   no_guardrail_saida)
 
 grafo.set_entry_point("guardrail_entrada")
 
@@ -210,7 +216,7 @@ def executar_fluxo_assessor(pergunta_usuario: str, session_id: str) -> str:
     estado_inicial = {
         "messages":         [{"role": "human", "content": pergunta_usuario}],
         "agentes_chamados": [],
-        "mapa":             {},
+        "mapa_pii":             {},
         "rota":             "",
     }       
 
@@ -219,7 +225,6 @@ def executar_fluxo_assessor(pergunta_usuario: str, session_id: str) -> str:
         config={"configurable": {"thread_id": session_id}},
     )
 
-    print(f"[debug] agentes chamados: {estado_final['agentes_chamados']}")
     return estado_final["messages"][-1].text
 
 # ==============================================================================
